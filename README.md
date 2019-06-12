@@ -26,3 +26,12 @@ CommonJS模块
 5:major,主版本，大版本更新，重构
 3:minor,增减功能
 0.7523 patch：补丁。偶数是稳定版，基数是测试版
+
+
+request GET  POST
+爬虫
+post提交
+- server: createServer
+- get(url[options])
+- request(options)
+- get/post

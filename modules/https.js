@@ -1,2 +1,7 @@
 const http = require('http');
-http.get({})
+http.get({
+    protocol:'http',
+    host:'m.maoyan.com',
+},(res)=>{
+    
+})
