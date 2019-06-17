@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>WebSocket</title>
-  <script src="WsClient.js" charset="utf-8"></script>
+  <script src="socket.io.js" charset="utf-8"></script>
 </head>
 <body>
   <h1>gp10 交流区</h1>
@@ -16,12 +16,18 @@
   </div>
   <button id="submit">提交</button>
   <script>
+    var socket = io.connect('http://localhost:8082');
+    const content = document.getElementById("content");
     document.querySelector('#submit')
       .addEventListener('click', function () {
         var msg2 = msg.value
-        ws.send(msg2)
+        socket.emit('receive',msg2);
         msg.value = ''
+        content.innerHTML +=msg2 +'<br/>'
       }, false)
+      socket.on('message',function (msg) { 
+        content.innerHTML +=msg +'<br/>'
+       })
   </script>
 </body>
 </html>
