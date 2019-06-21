@@ -7,7 +7,7 @@ const router = new SMERouter('router-view')
 
 router.route('/',indexController.render)
 router.route('/position',positionController.render)
-
+router.route('/position_add',positionController.add)
 router.route('*',(req,res,next)=>{
     res.redirect('/') // 实际为重定向到 / 的路由上
 })

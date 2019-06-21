@@ -1,5 +1,8 @@
 const userModel = require('../models/users')
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path =require('path')
 class UserController {
     hashPassword(pwd) {
         return new Promise((resolve) => {
@@ -15,8 +18,13 @@ class UserController {
             })
         })
     }
-
+    genToken(username){
+        // let key = 'xiaoyu'
+        let cert = fs.readFileSync(path.resolve(__dirname,'../keys/rsa_private_key.pem'))
+       return jwt.sign({username},cert,{algorithm:'RS256'})
+    }
     async signup(req, res, next) {
+        res.set('Content-Type', 'application/json;charset=utf-8');
         let user = await userModel.find(req.body);
         if (user) {
             res.render('succ', {
@@ -26,7 +34,6 @@ class UserController {
             })
             return
         }
-        res.set('Content-Type', 'application/json;charset=utf-8');
 
         let password = await userController.hashPassword(req.body.password);
         let result = await userModel.insert({ ...req.body, password })
@@ -51,8 +58,10 @@ class UserController {
         let result = await userModel.find(req.body)
         if (result) {
             if (await userController.comparePassword(req.body.password, result['password'])) {
-                // 创建session，保存用户名
+                // Create session and save username
                 req.session.username = result['username']
+                // generate Token
+                res.header('X-Access-Token',userController.genToken(result.username))
                 res.render('succ', {
                     data: JSON.stringify({
                         username: result['username'],
@@ -69,37 +78,14 @@ class UserController {
         } else {
             res.render('fail', {
                 data: JSON.stringify({
-                    mseeage: 'inserted unsuccessfully'
+                    mseeage: 'inserted unsuccessfully,user not found'
                 })
             })
         }
     }
     // 检验缓存中是否有登录信息
-    issignin(req,res,next){
-        res.set('Content-Type','application/json;charset=utf-8');
-        if(req.session.username){
-            res.render('succ',{
-                data:JSON.stringify({
-                    username:req.session.username,
-                    isSignin:true
-                })
-            })
-        }else{
-            res.render('succ',{
-                data:JSON.stringify({
-                    isSignin:false
-                })
-            })
-        }
-    }
-    signout(req,res,next){
-        req.session = null
-        res.render('succ',{
-            data:JSON.stringify({
-                isSignin:false
-            })
-        })
-    }
+   
+  
 }
 const userController = new UserController()
 module.exports = userController;
