@@ -17,9 +17,10 @@ class PositionModel{
             ...data,
             createTime:'2019-6-21'
         })
+        return position.save()
     }
     findAll(){
-        return this.positionModel.find({}).sort({_id:-1})
+        return this.positionModel.find({})
     }
 }
 const positionModel = new PositionModel()

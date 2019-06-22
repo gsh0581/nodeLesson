@@ -38,7 +38,7 @@ class FileUpload {
         var upload = multer({
             storage,
             limits:{
-                fileSize:1024*1024
+                fileSize:1024*1024*10
             },
             fileFilter:fileUpload._fileFilter
         }).single('companyLogo')
